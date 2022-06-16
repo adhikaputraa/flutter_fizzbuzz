@@ -4,6 +4,8 @@ import 'package:fizzbuzz/fizzbuzz_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
+
 class HomePage extends StatefulWidget {
   static String tag = 'home-page';
   @override
@@ -12,13 +14,17 @@ class HomePage extends StatefulWidget {
   
   class _HomePageState extends State<HomePage> {
     int input = 0;
-    TextEditingController inputController = TextEditingController();
+    TextEditingController inputController = new TextEditingController();
+    var _formKey = GlobalKey<ScaffoldState>();
     
     @override
     Widget build(BuildContext context) {
       final input = Padding(
         padding: EdgeInsets.fromLTRB(30.0, 20, 30, 20),
         child: TextFormField(
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly
+          ],
         controller: inputController,
         keyboardType: TextInputType.number,
         autofocus: false,
@@ -35,7 +41,12 @@ class HomePage extends StatefulWidget {
         child: RaisedButton(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => FizzBuzzPage(int.parse(inputController.text))));
+          if (inputController.text.isEmpty) {
+            openDialog(message: "Please input the number");
+          }
+          else if (int.parse(inputController.text) > 1000) {
+            openDialog(message: "Maximum number is 1000");
+          } else Navigator.push(context, MaterialPageRoute(builder: (context) => FizzBuzzPage(int.parse(inputController.text))));
         },
         padding: EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 20.0),
         color: Colors.blueAccent,
@@ -64,5 +75,27 @@ class HomePage extends StatefulWidget {
         ],)
       );
     }
+
+  openDialog({required String message}) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text(message),
+            title: Text('Error'),
+            actions: <Widget>[
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'OK',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              )
+            ],
+          );
+        });
+  }
   }
   

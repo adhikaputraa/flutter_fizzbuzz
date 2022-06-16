@@ -21,12 +21,13 @@ class _FizzBuzzPage extends State<FizzBuzzPage> {
             color: Colors.white,
           )),
       ),
-      body: ListView.builder(
+      body: ListView.separated(
         itemCount: input,
+        separatorBuilder: (context, index) =>Divider(height: 0.5, color: Colors.grey),
         itemBuilder: (BuildContext context, int position) {
           FizzBuzz fizzbuzz = FizzBuzz();
           return Padding(
-            padding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+            padding: EdgeInsets.fromLTRB(30, 20, 0, 30),
             child: Text(fizzbuzz.getFizzBuzz(position),
           style: TextStyle(
             color: Colors.grey,
